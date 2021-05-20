@@ -8,6 +8,11 @@ public class DesktopLauncher {
 
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+
+        // Basic portrait phone dimensions.
+        config.width = 480;
+        config.height = 800;
+
         new LwjglApplication(new GameMain(), config);
     }
 }
