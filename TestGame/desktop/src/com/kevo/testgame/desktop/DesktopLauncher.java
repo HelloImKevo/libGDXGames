@@ -3,6 +3,7 @@ package com.kevo.testgame.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.kevo.testgame.GameMain;
+import com.kevo.testgame.helpers.GameInfo;
 
 public class DesktopLauncher {
 
@@ -10,8 +11,8 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
         // Basic portrait phone dimensions.
-        config.width = 480;
-        config.height = 800;
+        config.width = GameInfo.WIDTH;
+        config.height = GameInfo.HEIGHT;
 
         new LwjglApplication(new GameMain(), config);
     }
