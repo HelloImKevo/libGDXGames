@@ -4,18 +4,21 @@ import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.utils.ScreenUtils
 import com.kevo.testgame.GameMain
-import com.kevo.testgame.PointHelper.Companion.getCenter
 import com.kevo.testgame.helpers.GameInfo
+import com.kevo.testgame.player.Player
 
 class MainMenu(private val game: GameMain) : Screen {
 
     private val background = Texture("Game BG.png")
-    private val player = Sprite(Texture("Player 1.png"))
+    private val player = Player(
+            "Player 1.png",
+            GameInfo.WIDTH.toFloat(),
+            GameInfo.HEIGHT.toFloat())
 
     init {
+        /*
         // Calculate center coordinates.
         val (worldCenterX, worldCenterY) =
                 getCenter(GameInfo.WIDTH.toFloat(), GameInfo.HEIGHT.toFloat())
@@ -25,6 +28,7 @@ class MainMenu(private val game: GameMain) : Screen {
         player.setPosition(
                 worldCenterX - playerCenterX,
                 worldCenterY - playerCenterY)
+         */
     }
 
     /**
