@@ -3,12 +3,16 @@ package com.kevo.testgame.scenes
 import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.ScreenUtils
 import com.kevo.testgame.GameMain
+import com.kevo.testgame.clouds.Cloud
 import com.kevo.testgame.helpers.GameInfo
 import com.kevo.testgame.player.Player
 
@@ -21,15 +25,40 @@ class MainMenu(private val game: GameMain) : Screen {
      * makes the game engine more efficient, so calculations do not need
      * to be performed for sleeping bodies.
      */
-    private val world: World = World(Vector2(0f, -9.8f), true)
+    private val world: World = World(Vector2(0f, -2.0f), true)
 
+    /**
+     * The *Player* character in our game world.
+     */
     private val player = Player(
             world = world,
             textureFileName = "Player 1.png",
             x = GameInfo.WIDTH.toFloat(),
-            y = GameInfo.HEIGHT.toFloat())
+            y = GameInfo.HEIGHT.toFloat() + 250)
+
+    private val cloud = Cloud(
+            world = world,
+            textureFileName = "Cloud 1.png")
+
+    /**
+     * A 2D orthographic camera instance. Used to render outlines of the
+     * physics bodies.
+     */
+    private val box2DCamera: OrthographicCamera = OrthographicCamera()
+
+    /**
+     * Responsible for rendering the contents of the orthographic camera
+     * to the screen.
+     */
+    private val debugRenderer: Box2DDebugRenderer = Box2DDebugRenderer()
 
     init {
+        box2DCamera.setToOrtho(false,
+                GameInfo.WIDTH.toFloat() / GameInfo.PPM,
+                GameInfo.HEIGHT.toFloat() / GameInfo.PPM)
+        box2DCamera.position.set(
+                GameInfo.WIDTH / 2f,
+                GameInfo.HEIGHT / 2f, 0f)
         /*
         // Calculate center coordinates.
         val (worldCenterX, worldCenterY) =
@@ -44,6 +73,39 @@ class MainMenu(private val game: GameMain) : Screen {
     }
 
     /**
+     * Update game world using [dt] "Delta Time".
+     */
+    private fun update(dt: Float) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            // Linear Impulse: Moves the player immediately.
+            // player.getBody().applyLinearImpulse(
+            //         Vector2(-0.1f, 0f),
+            //         player.getBody().worldCenter,
+            //         // Wake up the body.
+            //         true)
+
+            // Force: Speed over time.
+            player.getBody().applyForce(
+                    Vector2(-2f, 0f),
+                    player.getBody().worldCenter,
+                    // Wake up the body.
+                    true)
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            // player.getBody().applyLinearImpulse(
+            //         Vector2(0.1f, 0f),
+            //         player.getBody().worldCenter,
+            //         // Wake up the body.
+            //         true)
+
+            player.getBody().applyForce(
+                    Vector2(2f, 0f),
+                    player.getBody().worldCenter,
+                    // Wake up the body.
+                    true)
+        }
+    }
+
+    /**
      * Called when this screen becomes the current screen for a [Game].
      */
     override fun show() {
@@ -55,6 +117,8 @@ class MainMenu(private val game: GameMain) : Screen {
      * @param delta The time in seconds since the last render.
      */
     override fun render(delta: Float) {
+        update(delta)
+
         player.updatePlayer()
 
         ScreenUtils.clear(1f, 0f, 0f, 1f)
@@ -64,8 +128,18 @@ class MainMenu(private val game: GameMain) : Screen {
         game.batch.draw(background, 0f, 0f)
 
         // Draw the Player sprite in the center of the world.
-        game.batch.draw(player, player.x, player.y)
+        game.batch.draw(player,
+                player.x - (player.width / 2),
+                player.y - (player.height / 2))
+
+        // Draw the cloud platform.
+        game.batch.draw(cloud,
+                cloud.x - (cloud.width / 2),
+                cloud.y - (cloud.height / 2))
+
         game.batch.end()
+
+        debugRenderer.render(world, box2DCamera.combined)
 
         // Time step, velocity iterations, and position iterations. Higher numbers
         // result in better precision, but worse performance.

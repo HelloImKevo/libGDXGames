@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Fixture
 import com.badlogic.gdx.physics.box2d.FixtureDef
 import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
+import com.kevo.testgame.helpers.GameInfo
 
 /**
  * Represents the *Player* character. The new Player instance will be created at
@@ -56,14 +57,18 @@ class Player(
         - A dynamic body is affected by gravity and other forces.
          */
         bodyDef.type = BodyDef.BodyType.DynamicBody
-        bodyDef.position.set(this.x, this.y)
+        bodyDef.position.set(
+                this.x / GameInfo.PPM,
+                this.y / GameInfo.PPM)
 
         body = world.createBody(bodyDef)
 
         body?.let {
             // Shape of the physics body.
             val shape = PolygonShape()
-            shape.setAsBox(this.width / 2, this.height / 2)
+            shape.setAsBox(
+                    (this.width / 2) / GameInfo.PPM.toFloat(),
+                    (this.height / 2) / GameInfo.PPM.toFloat())
 
             val fixtureDef = FixtureDef()
             fixtureDef.shape = shape
@@ -78,7 +83,12 @@ class Player(
 
     fun updatePlayer() {
         body?.let {
-            setPosition(it.position.x, it.position.y)
+            setPosition(
+                    it.position.x * GameInfo.PPM.toFloat(),
+                    it.position.y * GameInfo.PPM.toFloat())
         }
     }
+
+    // TODO: Improve nullability of the Body member.
+    fun getBody(): Body = this.body!!
 }
