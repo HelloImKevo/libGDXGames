@@ -17,6 +17,8 @@ class Cloud(
         createPhysicsBody()
     }
 
+    override fun getFixtureUserData() = "Cloud"
+
     override fun getBodyType() = BodyDef.BodyType.StaticBody
 
     override fun getPhysicsBodyWidth(): Float =

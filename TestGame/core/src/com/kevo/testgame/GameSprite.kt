@@ -22,6 +22,8 @@ abstract class GameSprite(
      */
     lateinit var body: Body
 
+    abstract fun getFixtureUserData(): String
+
     abstract fun getBodyType(): BodyDef.BodyType
 
     abstract fun getPhysicsBodyWidth(): Float
@@ -55,6 +57,7 @@ abstract class GameSprite(
             fixtureDef.density = 1f
 
             val fixture: Fixture = it.createFixture(fixtureDef)
+            fixture.userData = getFixtureUserData()
 
             // Free up memory (system resources).
             shape.dispose()

@@ -9,6 +9,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
+import com.badlogic.gdx.physics.box2d.Contact
+import com.badlogic.gdx.physics.box2d.ContactImpulse
+import com.badlogic.gdx.physics.box2d.ContactListener
+import com.badlogic.gdx.physics.box2d.Fixture
+import com.badlogic.gdx.physics.box2d.Manifold
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.ScreenUtils
 import com.kevo.testgame.GameMain
@@ -16,7 +21,7 @@ import com.kevo.testgame.clouds.Cloud
 import com.kevo.testgame.helpers.GameInfo
 import com.kevo.testgame.player.Player
 
-class MainMenu(private val game: GameMain) : Screen {
+class MainMenu(private val game: GameMain) : Screen, ContactListener {
 
     private val background = Texture("Game BG.png")
 
@@ -59,6 +64,8 @@ class MainMenu(private val game: GameMain) : Screen {
         box2DCamera.position.set(
                 GameInfo.WIDTH / 2f,
                 GameInfo.HEIGHT / 2f, 0f)
+
+        world.setContactListener(this)
         /*
         // Calculate center coordinates.
         val (worldCenterX, worldCenterY) =
@@ -85,11 +92,9 @@ class MainMenu(private val game: GameMain) : Screen {
             //         true)
 
             // Force: Speed over time.
-            player.getBody().applyForce(
-                    Vector2(-2f, 0f),
-                    player.getBody().worldCenter,
-                    // Wake up the body.
-                    true)
+            player.body.let {
+                it.applyForce(Vector2(-2f, 0f), it.worldCenter, true)
+            }
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             // player.getBody().applyLinearImpulse(
             //         Vector2(0.1f, 0f),
@@ -97,13 +102,13 @@ class MainMenu(private val game: GameMain) : Screen {
             //         // Wake up the body.
             //         true)
 
-            player.getBody().applyForce(
-                    Vector2(2f, 0f),
-                    player.getBody().worldCenter,
-                    // Wake up the body.
-                    true)
+            player.body.let {
+                it.applyForce(Vector2(2f, 0f), it.worldCenter, true)
+            }
         }
     }
+
+    //region Screen Implementation
 
     /**
      * Called when this screen becomes the current screen for a [Game].
@@ -181,4 +186,43 @@ class MainMenu(private val game: GameMain) : Screen {
         background.dispose()
         player.texture.dispose()
     }
+
+    //endregion
+
+    //region ContactListener Implementation
+
+    /** Called when two fixtures begin to touch. */
+    override fun beginContact(contact: Contact?) {
+        contact ?: return
+
+        contact.fixtureA?.let { println("FixtureA Contact : " + it.userData) }
+        contact.fixtureB?.let { println("FixtureB Contact : " + it.userData) }
+
+        val playerBody: Fixture
+        val secondBody: Fixture
+        contact.fixtureA?.let {
+            if (it.userData == player.getFixtureUserData()) {
+                playerBody = it
+                secondBody = contact.fixtureB
+            } else {
+                playerBody = contact.fixtureB
+                secondBody = it
+            }
+        }
+    }
+
+    /** Called when two fixtures cease to touch. */
+    override fun endContact(contact: Contact?) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun preSolve(contact: Contact?, oldManifold: Manifold?) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun postSolve(contact: Contact?, impulse: ContactImpulse?) {
+        // TODO("Not yet implemented")
+    }
+
+    //endregion
 }
