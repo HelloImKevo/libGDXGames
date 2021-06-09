@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
 import com.kevo.jackgiant.clouds.Cloud
@@ -38,13 +39,13 @@ class Gameplay(private val game: GameMain) : Screen {
      */
     private val player = Player(
             world = world,
-            textureFileName = "Player/Player 1.png",
+            assetInfo = AssetInfo("Player", "Player 1.png"),
             x = GameInfo.WIDTH.toFloat(),
             y = GameInfo.HEIGHT.toFloat() + 250)
 
     private val cloud = Cloud(
             world = world,
-            textureFileName = "Clouds/Cloud 1.png")
+            assetInfo = AssetInfo("Clouds", "Cloud 1.png"))
 
     /**
      * The 2D orthographic main game camera that works with the viewport to

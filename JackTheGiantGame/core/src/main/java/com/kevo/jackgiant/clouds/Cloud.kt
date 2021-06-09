@@ -2,13 +2,14 @@ package com.kevo.jackgiant.clouds
 
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.GameSprite
 import com.kevo.jackgiant.GameInfo
 
 class Cloud(
         world: World,
-        textureFileName: String
-) : GameSprite(world, textureFileName) {
+        assetInfo: AssetInfo
+) : GameSprite(world, assetInfo) {
 
     init {
         setPosition(

@@ -2,13 +2,14 @@ package com.kevo.jackgiant.player
 
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
+import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.GameSprite
 import com.kevo.jackgiant.GameInfo
 
 /**
  * Represents the *Player* character. The new Player instance will be created at
  * the specified [x] and [y] coordinates in the game world, with a texture using
- * the [textureFileName].
+ * the asset `fileName`.
  *
  * @constructor Creates a new Player instance at the specified location.
  *
@@ -24,10 +25,10 @@ class Player(
          * don't need physics in the main menu, or the options menu.
          */
         private val world: World,
-        textureFileName: String,
+        assetInfo: AssetInfo,
         x: Float,
         y: Float
-) : GameSprite(world, textureFileName) {
+) : GameSprite(world, assetInfo) {
 
     init {
         setPosition((x - width) / 2, (y - height) / 2)

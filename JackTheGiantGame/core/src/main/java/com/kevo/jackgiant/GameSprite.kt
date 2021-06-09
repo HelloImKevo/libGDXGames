@@ -11,8 +11,8 @@ import com.badlogic.gdx.physics.box2d.World
 
 abstract class GameSprite(
         private val world: World,
-        textureFileName: String
-) : Sprite(Texture(textureFileName)) {
+        assetInfo: AssetInfo
+) : Sprite(Texture(assetInfo.getFilePath())) {
 
     /**
      * The actual body of the sprite. We will want to move the body and manipulate
