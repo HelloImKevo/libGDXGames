@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World
 
 abstract class GameSprite(
         private val world: World,
-        assetInfo: AssetInfo
+        private val assetInfo: AssetInfo
 ) : Sprite(Texture(assetInfo.getFilePath())) {
 
     /**
@@ -27,7 +27,7 @@ abstract class GameSprite(
 
     abstract fun getPhysicsBodyWidth(): Float
 
-    protected fun createPhysicsBody() {
+    private fun createPhysicsBody() {
         // Define whether the body is dynamic, static, or kinematic.
         val bodyDef = BodyDef()
 
@@ -62,4 +62,19 @@ abstract class GameSprite(
             shape.dispose()
         }
     }
+
+    fun setSpritePosition(x: Float, y: Float) {
+        setPosition(x, y)
+        createPhysicsBody()
+    }
+
+    /**
+     * Returns the calculated center points
+     */
+    fun getCenterPoints(): Pair<Float, Float> = Pair(x - (width / 2), y - (height / 2))
+
+    /**
+     * Returns the asset's name (without the file extension), ex: "Dark Cloud"
+     */
+    fun getAssetName(): String = assetInfo.fileName.substringBefore(".")
 }

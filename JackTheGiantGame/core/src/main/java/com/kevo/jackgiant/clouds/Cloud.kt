@@ -8,20 +8,30 @@ import com.kevo.jackgiant.GameInfo
 
 class Cloud(
         world: World,
-        assetInfo: AssetInfo
+        assetInfo: AssetInfo,
+        val type: Type
 ) : GameSprite(world, assetInfo) {
 
-    init {
-        setPosition(
-                GameInfo.WIDTH / 2f,
-                (GameInfo.HEIGHT / 2f) - 130)
-        createPhysicsBody()
+    enum class Type {
+
+        /**
+         * A standard cloud platform.
+         */
+        STANDARD,
+
+        /**
+         * A harmful cloud that hurts the player.
+         */
+        DARK
     }
 
     override fun getFixtureUserData() = "Cloud"
 
+    /**
+     * Clouds are not affected by gravity or other forces.
+     */
     override fun getBodyType() = BodyDef.BodyType.StaticBody
 
     override fun getPhysicsBodyWidth(): Float =
-            this.width / GameInfo.PPM.toFloat()
+            (this.width / 2) / GameInfo.PPM.toFloat()
 }

@@ -14,10 +14,6 @@ import com.kevo.jackgiant.GameInfo
  * @constructor Creates a new Player instance at the specified location.
  *
  * @property world The world in which the `Player` exists.
- *
- * @param textureFileName The name of the texture file, ex: "Player.png".
- * @param x The X-coordinate where the `Player` should be placed.
- * @param y The Y-coordinate where the `Player` should be placed.
  */
 class Player(
         /**
@@ -25,18 +21,14 @@ class Player(
          * don't need physics in the main menu, or the options menu.
          */
         private val world: World,
-        assetInfo: AssetInfo,
-        x: Float,
-        y: Float
+        assetInfo: AssetInfo
 ) : GameSprite(world, assetInfo) {
-
-    init {
-        setPosition((x - width) / 2, (y - height) / 2)
-        createPhysicsBody()
-    }
 
     override fun getFixtureUserData() = "Player"
 
+    /**
+     * The player is affected by gravity and other forces.
+     */
     override fun getBodyType() = BodyDef.BodyType.DynamicBody
 
     override fun getPhysicsBodyWidth(): Float =

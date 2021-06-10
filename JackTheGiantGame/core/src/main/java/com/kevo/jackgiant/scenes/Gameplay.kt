@@ -18,7 +18,8 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
-import com.kevo.jackgiant.clouds.Cloud
+import com.kevo.jackgiant.GameSprite
+import com.kevo.jackgiant.clouds.CloudsController
 import com.kevo.jackgiant.player.Player
 import kotlin.math.abs
 
@@ -39,13 +40,9 @@ class Gameplay(private val game: GameMain) : Screen {
      */
     private val player = Player(
             world = world,
-            assetInfo = AssetInfo("Player", "Player 1.png"),
-            x = GameInfo.WIDTH.toFloat(),
-            y = GameInfo.HEIGHT.toFloat() + 250)
+            assetInfo = AssetInfo("Player", "Player 1.png"))
 
-    private val cloud = Cloud(
-            world = world,
-            assetInfo = AssetInfo("Clouds", "Cloud 1.png"))
+    private val cloudsController = CloudsController(world)
 
     /**
      * The 2D orthographic main game camera that works with the viewport to
@@ -91,6 +88,10 @@ class Gameplay(private val game: GameMain) : Screen {
         box2DCamera.position.set(
                 GameInfo.WIDTH / 2f,
                 GameInfo.HEIGHT / 2f, 0f)
+
+        // Create the player below the top screen bounds.
+        player.setSpritePosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT - 100f)
+        cloudsController.positionClouds()
     }
 
     @Synchronized
@@ -110,6 +111,11 @@ class Gameplay(private val game: GameMain) : Screen {
 
     private fun drawBackgrounds() {
         for (bg in backgrounds) game.batch.draw(bg, bg.x, bg.y)
+    }
+
+    private fun drawSprite(sprite: GameSprite) {
+        val centerPoints: Pair<Float, Float> = sprite.getCenterPoints()
+        game.batch.draw(sprite, centerPoints.first, centerPoints.second)
     }
 
     /**
@@ -148,11 +154,9 @@ class Gameplay(private val game: GameMain) : Screen {
             |  BG  |
             |      |
             +------+
-            +------+
             |      |
             |  BG  |
             |      |
-            +------+
             +------+
             |      |
             |  BG  |
@@ -193,22 +197,19 @@ class Gameplay(private val game: GameMain) : Screen {
         drawBackgrounds()
 
         // Draw the Player sprite in the center of the world.
-        game.batch.draw(player,
-                player.x - (player.width / 2),
-                player.y - (player.height / 2))
+        drawSprite(player)
 
         // Draw the cloud platform.
-        game.batch.draw(cloud,
-                cloud.x - (cloud.width / 2),
-                cloud.y - (cloud.height / 2))
+        cloudsController.drawClouds(game.batch)
 
         game.batch.end()
+
+        // The debug renderer must be triggered before updating the main camera.
+        debugRenderer.render(world, box2DCamera.combined)
 
         // Specify what we "see" with our camera.
         game.batch.projectionMatrix = mainCamera.combined
         mainCamera.update()
-
-        // debugRenderer.render(world, box2DCamera.combined)
 
         // Time step, velocity iterations, and position iterations. Higher numbers
         // result in better precision, but worse performance.
