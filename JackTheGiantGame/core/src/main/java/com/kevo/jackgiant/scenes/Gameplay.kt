@@ -91,7 +91,6 @@ class Gameplay(private val game: GameMain) : Screen {
 
         // Create the player below the top screen bounds.
         player.setSpritePosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT - 100f)
-        cloudsController.positionClouds()
     }
 
     @Synchronized
@@ -136,6 +135,9 @@ class Gameplay(private val game: GameMain) : Screen {
 
         moveCamera()
         checkBackgroundsOutOfBounds()
+        cloudsController.setCameraY(mainCamera.position.y)
+        // TODO: Optimize this logic - it does not need to be called every render pass.
+        cloudsController.createAndArrangeNewClouds()
     }
 
     private fun moveCamera() {
