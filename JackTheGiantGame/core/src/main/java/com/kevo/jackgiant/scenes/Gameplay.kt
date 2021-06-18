@@ -16,9 +16,13 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.kevo.jackgiant.AssetInfo
+import com.kevo.jackgiant.CAMERA_DEFAULT_SPEED
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
 import com.kevo.jackgiant.GameSprite
+import com.kevo.jackgiant.PLAYER_JUMP_FORCE
+import com.kevo.jackgiant.PLAYER_MOVEMENT_FORCE
+import com.kevo.jackgiant.WORLD_GRAVITY
 import com.kevo.jackgiant.clouds.CloudsController
 import com.kevo.jackgiant.player.Player
 import kotlin.math.abs
@@ -33,7 +37,7 @@ class Gameplay(private val game: GameMain) : Screen {
      * makes the game engine more efficient, so calculations do not need
      * to be performed for sleeping bodies.
      */
-    private val world: World = World(Vector2(0f, -2.0f), true)
+    private val world: World = World(Vector2(0f, -WORLD_GRAVITY), true)
 
     /**
      * The *Player* character in our game world.
@@ -90,7 +94,7 @@ class Gameplay(private val game: GameMain) : Screen {
                 GameInfo.HEIGHT / 2f, 0f)
 
         // Create the player below the top screen bounds.
-        player.setSpritePosition(GameInfo.WIDTH / 2f, GameInfo.HEIGHT - 100f)
+        cloudsController.positionThePlayer(player)
     }
 
     @Synchronized
@@ -117,21 +121,26 @@ class Gameplay(private val game: GameMain) : Screen {
         game.batch.draw(sprite, centerPoints.first, centerPoints.second)
     }
 
+    private fun handleInput(dt: Float) {
+        when {
+            Gdx.input.isKeyPressed(Input.Keys.LEFT) -> {
+                player.movePlayer(-PLAYER_MOVEMENT_FORCE)
+            }
+            Gdx.input.isKeyPressed(Input.Keys.RIGHT) -> {
+                player.movePlayer(PLAYER_MOVEMENT_FORCE)
+            }
+            Gdx.input.isKeyJustPressed(Input.Keys.SPACE) -> {
+                player.jump(PLAYER_JUMP_FORCE)
+            }
+        }
+    }
+
     /**
      * Update game world using [dt] "Delta Time" (the time between each frame,
      * usually a very small number).
      */
     private fun update(dt: Float) {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            player.body.let {
-                // Force: Speed over time.
-                it.applyForce(Vector2(-2f, 0f), it.worldCenter, true)
-            }
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            player.body.let {
-                it.applyForce(Vector2(2f, 0f), it.worldCenter, true)
-            }
-        }
+        handleInput(dt)
 
         moveCamera()
         checkBackgroundsOutOfBounds()
@@ -142,7 +151,7 @@ class Gameplay(private val game: GameMain) : Screen {
 
     private fun moveCamera() {
         // TODO: The two cameras can probably be combined, may need to call mainCamera.setToOrtho.
-        mainCamera.position.y -= 1
+        mainCamera.position.y -= CAMERA_DEFAULT_SPEED
     }
 
     private fun checkBackgroundsOutOfBounds() {
@@ -190,8 +199,6 @@ class Gameplay(private val game: GameMain) : Screen {
     override fun render(delta: Float) {
         update(delta)
 
-        player.updatePlayer()
-
         ScreenUtils.clear(1f, 0f, 0f, 1f)
 
         game.batch.begin()
@@ -212,6 +219,8 @@ class Gameplay(private val game: GameMain) : Screen {
         // Specify what we "see" with our camera.
         game.batch.projectionMatrix = mainCamera.combined
         mainCamera.update()
+
+        player.updatePlayer()
 
         // Time step, velocity iterations, and position iterations. Higher numbers
         // result in better precision, but worse performance.

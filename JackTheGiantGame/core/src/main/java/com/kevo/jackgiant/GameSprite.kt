@@ -27,6 +27,10 @@ abstract class GameSprite(
 
     abstract fun getPhysicsBodyWidth(): Float
 
+    abstract fun getDensity(): Float
+
+    abstract fun getFriction(): Float
+
     private fun createPhysicsBody() {
         // Define whether the body is dynamic, static, or kinematic.
         val bodyDef = BodyDef()
@@ -43,24 +47,27 @@ abstract class GameSprite(
                 this.y / GameInfo.PPM)
 
         body = world.createBody(bodyDef)
+        // Do not allow our sprites to be rotated by the physics engine.
+        body.isFixedRotation = true
 
-        body.let {
-            // Shape of the physics body.
-            val shape = PolygonShape()
-            shape.setAsBox(
-                    getPhysicsBodyWidth(),
-                    (this.height / 2) / GameInfo.PPM.toFloat())
+        // Shape of the physics body.
+        val shape = PolygonShape()
+        shape.setAsBox(
+                getPhysicsBodyWidth(),
+                (this.height / 2) / GameInfo.PPM.toFloat())
 
-            val fixtureDef = FixtureDef()
-            fixtureDef.shape = shape
-            fixtureDef.density = 1f
+        val fixtureDef = FixtureDef()
+        fixtureDef.shape = shape
+        // The mass of the body.
+        fixtureDef.density = getDensity()
+        // Make our player stick to the surface (rather than slide).
+        fixtureDef.friction = getFriction()
 
-            val fixture: Fixture = it.createFixture(fixtureDef)
-            fixture.userData = getFixtureUserData()
+        val fixture: Fixture = body.createFixture(fixtureDef)
+        fixture.userData = getFixtureUserData()
 
-            // Free up memory (system resources).
-            shape.dispose()
-        }
+        // Free up memory (system resources).
+        shape.dispose()
     }
 
     fun setSpritePosition(x: Float, y: Float) {

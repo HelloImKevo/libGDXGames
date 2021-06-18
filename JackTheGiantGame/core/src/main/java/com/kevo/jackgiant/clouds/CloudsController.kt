@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.physics.box2d.World
 import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.GameInfo
+import com.kevo.jackgiant.player.Player
 import java.util.Random
 import kotlin.collections.ArrayList
 
@@ -122,6 +123,10 @@ class CloudsController(private val world: World) {
 
     fun setCameraY(cameraY: Float) {
         this.cameraY = cameraY
+    }
+
+    fun positionThePlayer(player: Player) {
+        player.setSpritePosition(clouds[0].x, clouds[0].y + 100)
     }
 
     private fun randomBetweenNumbers(min: Float, max: Float): Float {

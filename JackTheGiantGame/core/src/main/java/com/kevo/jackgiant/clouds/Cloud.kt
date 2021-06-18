@@ -3,6 +3,8 @@ package com.kevo.jackgiant.clouds
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.physics.box2d.World
 import com.kevo.jackgiant.AssetInfo
+import com.kevo.jackgiant.CLOUD_DENSITY
+import com.kevo.jackgiant.CLOUD_FRICTION
 import com.kevo.jackgiant.GameSprite
 import com.kevo.jackgiant.GameInfo
 
@@ -34,4 +36,8 @@ class Cloud(
 
     override fun getPhysicsBodyWidth(): Float =
             (this.width / 2) / GameInfo.PPM.toFloat()
+
+    override fun getDensity(): Float = CLOUD_DENSITY
+
+    override fun getFriction(): Float = CLOUD_FRICTION
 }
