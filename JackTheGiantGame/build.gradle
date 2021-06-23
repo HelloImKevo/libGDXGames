@@ -51,7 +51,15 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+        // GDX Tools - Ex: TexturePacker
+        api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+
+        // Kotlin Standard Library
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        // Testing
+        testImplementation "junit:junit:$junitVersion"
     }
 }
 
