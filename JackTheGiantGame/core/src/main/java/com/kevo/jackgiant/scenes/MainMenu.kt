@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
+import com.kevo.jackgiant.hud.MainMenuButtons
 
 class MainMenu(private val game: GameMain) : Screen {
 
@@ -24,6 +25,8 @@ class MainMenu(private val game: GameMain) : Screen {
             GameInfo.HEIGHT.toFloat(),
             mainCamera)
 
+    private var buttons: MainMenuButtons
+
     init {
         mainCamera.setToOrtho(false,
                 GameInfo.WIDTH.toFloat(),
@@ -32,6 +35,8 @@ class MainMenu(private val game: GameMain) : Screen {
         mainCamera.position.set(
                 GameInfo.WIDTH / 2f,
                 GameInfo.HEIGHT / 2f, 0f)
+
+        buttons = MainMenuButtons(game)
     }
 
     /** Called when this screen becomes the current screen for a [Game]. */
@@ -51,6 +56,9 @@ class MainMenu(private val game: GameMain) : Screen {
         game.batch.draw(background, 0f, 0f)
 
         game.batch.end()
+
+        game.batch.projectionMatrix = buttons.stage.camera.combined
+        buttons.stage.draw()
     }
 
     /**
@@ -82,5 +90,6 @@ class MainMenu(private val game: GameMain) : Screen {
     /** Called when this screen should release all resources.  */
     override fun dispose() {
         background.dispose()
+        buttons.stage.dispose()
     }
 }
