@@ -256,7 +256,10 @@ class Gameplay(private val game: GameMain) : Screen {
 
     /** Called when this screen should release all resources. */
     override fun dispose() {
-        // TODO("Not yet implemented")
+        world.dispose()
+        for (background in backgrounds) background.texture.dispose()
+        player.texture.dispose()
+        debugRenderer.dispose()
     }
 
     //endregion

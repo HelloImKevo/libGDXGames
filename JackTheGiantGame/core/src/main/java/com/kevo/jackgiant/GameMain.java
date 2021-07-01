@@ -2,7 +2,7 @@ package com.kevo.jackgiant;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.kevo.jackgiant.scenes.Gameplay;
+import com.kevo.jackgiant.scenes.MainMenu;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ public class GameMain extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        setScreen(new Gameplay(this));
+        setScreen(new MainMenu(this));
     }
 
     @Override
