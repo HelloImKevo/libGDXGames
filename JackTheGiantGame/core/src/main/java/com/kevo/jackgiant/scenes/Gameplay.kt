@@ -19,9 +19,8 @@ import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.CAMERA_DEFAULT_SPEED
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
-import com.kevo.jackgiant.GameSprite
 import com.kevo.jackgiant.PLAYER_JUMP_FORCE
-import com.kevo.jackgiant.PLAYER_MOVEMENT_FORCE
+import com.kevo.jackgiant.PLAYER_MOVEMENT_VELOCITY
 import com.kevo.jackgiant.WORLD_GRAVITY
 import com.kevo.jackgiant.clouds.CloudsController
 import com.kevo.jackgiant.player.Player
@@ -44,7 +43,8 @@ class Gameplay(private val game: GameMain) : Screen {
      */
     private val player = Player(
             world = world,
-            assetInfo = AssetInfo("Player", "Player 1.png"))
+            assetInfo = AssetInfo("Player", "Player 1.png",
+                    "PlayerAnimation", "PlayerSpriteSheet.atlas"))
 
     private val cloudsController = CloudsController(world)
 
@@ -116,22 +116,22 @@ class Gameplay(private val game: GameMain) : Screen {
         for (bg in backgrounds) game.batch.draw(bg, bg.x, bg.y)
     }
 
-    private fun drawSprite(sprite: GameSprite) {
-        val centerPoints: Pair<Float, Float> = sprite.getCenterPoints()
-        game.batch.draw(sprite, centerPoints.first, centerPoints.second)
-    }
-
     private fun handleInput(dt: Float) {
         when {
             Gdx.input.isKeyPressed(Input.Keys.LEFT) -> {
-                player.movePlayer(-PLAYER_MOVEMENT_FORCE)
+                player.movePlayer(-PLAYER_MOVEMENT_VELOCITY)
             }
             Gdx.input.isKeyPressed(Input.Keys.RIGHT) -> {
-                player.movePlayer(PLAYER_MOVEMENT_FORCE)
+                player.movePlayer(PLAYER_MOVEMENT_VELOCITY)
             }
-            Gdx.input.isKeyJustPressed(Input.Keys.SPACE) -> {
-                player.jump(PLAYER_JUMP_FORCE)
+            else -> {
+                player.isWalking = false
             }
+        }
+
+        // The player can still jump when the Left or Right keys are pressed.
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            player.jump(PLAYER_JUMP_FORCE)
         }
     }
 
@@ -206,7 +206,8 @@ class Gameplay(private val game: GameMain) : Screen {
         drawBackgrounds()
 
         // Draw the Player sprite in the center of the world.
-        drawSprite(player)
+        player.drawPlayerIdle(game.batch)
+        player.drawPlayerAnimation(game.batch)
 
         // Draw the cloud platform.
         cloudsController.drawClouds(game.batch)

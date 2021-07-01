@@ -18,7 +18,18 @@ class AssetInfo(
         /**
          * The name of the texture file, ex: "Player.png".
          */
-        val fileName: String
+        val fileName: String,
+
+        /**
+         * Optional directory name for the asset animations, ex: "Animations".
+         */
+        private val animationDir: String? = null,
+
+        /**
+         * Optional file name for the animation sprite sheet atlas,
+         * ex: "PlayerAnimation.atlas".
+         */
+        private val atlasFileName: String? = null
 ) {
 
     fun getFilePath(): String {
@@ -27,5 +38,12 @@ class AssetInfo(
         // Note: File.pathSeparator is a Platform Type: String!
         val separator: String? = File.separator
         return directory + (separator ?: "/") + fileName
+    }
+
+    fun getAtlasFilePath(): String {
+        animationDir ?: return atlasFileName ?: ""
+
+        val separator: String? = File.separator
+        return animationDir + (separator ?: "/") + atlasFileName
     }
 }

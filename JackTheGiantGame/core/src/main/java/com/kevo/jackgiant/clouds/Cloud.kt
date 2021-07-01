@@ -35,7 +35,12 @@ class Cloud(
     override fun getBodyType() = BodyDef.BodyType.StaticBody
 
     override fun getPhysicsBodyWidth(): Float =
-            (this.width / 2) / GameInfo.PPM.toFloat()
+            // Use 90% of the texture's width.
+            ((this.width / 2) / GameInfo.PPM.toFloat()) * 0.9f
+
+    override fun getPhysicsBodyHeight(): Float =
+            // Use 80% of the texture's height.
+            ((this.height / 2) / GameInfo.PPM.toFloat()) * 0.8f
 
     override fun getDensity(): Float = CLOUD_DENSITY
 

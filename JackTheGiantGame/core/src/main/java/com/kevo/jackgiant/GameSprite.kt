@@ -10,7 +10,16 @@ import com.badlogic.gdx.physics.box2d.PolygonShape
 import com.badlogic.gdx.physics.box2d.World
 
 abstract class GameSprite(
-        private val world: World,
+
+        /**
+         * Create the world in the scene where we need physics. For example, we
+         * don't need physics in the main menu, or the options menu.
+         */
+        protected val world: World,
+
+        /**
+         * Information about the asset resources.
+         */
         private val assetInfo: AssetInfo
 ) : Sprite(Texture(assetInfo.getFilePath())) {
 
@@ -25,11 +34,15 @@ abstract class GameSprite(
 
     abstract fun getBodyType(): BodyDef.BodyType
 
-    abstract fun getPhysicsBodyWidth(): Float
-
     abstract fun getDensity(): Float
 
     abstract fun getFriction(): Float
+
+    open fun getPhysicsBodyWidth(): Float =
+            (this.width / 2) / GameInfo.PPM.toFloat()
+
+    open fun getPhysicsBodyHeight(): Float =
+            (this.height / 2) / GameInfo.PPM.toFloat()
 
     private fun createPhysicsBody() {
         // Define whether the body is dynamic, static, or kinematic.
@@ -52,9 +65,7 @@ abstract class GameSprite(
 
         // Shape of the physics body.
         val shape = PolygonShape()
-        shape.setAsBox(
-                getPhysicsBodyWidth(),
-                (this.height / 2) / GameInfo.PPM.toFloat())
+        shape.setAsBox(getPhysicsBodyWidth(), getPhysicsBodyHeight())
 
         val fixtureDef = FixtureDef()
         fixtureDef.shape = shape
