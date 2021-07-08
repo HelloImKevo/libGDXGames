@@ -1,10 +1,13 @@
 package com.kevo.jackgiant.hud
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -12,9 +15,11 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.kevo.jackgiant.AssetInfo
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
+import com.kevo.jackgiant.scenes.Gameplay
+import com.kevo.jackgiant.scenes.HighScore
 import java.io.File
 
-class MainMenuButtons(game: GameMain) {
+class MainMenuButtons(private val game: GameMain) {
 
     private val gameViewport: Viewport = FitViewport(
             GameInfo.WIDTH.toFloat(),
@@ -30,7 +35,12 @@ class MainMenuButtons(game: GameMain) {
     private lateinit var btnMusic: ImageButton
 
     init {
+        // Set our Stage as the input receiver.
+        Gdx.input.inputProcessor = stage
+
         createAndPositionButtons()
+
+        addAllListeners()
 
         stage.addActor(btnPlay)
         stage.addActor(btnHighScore)
@@ -57,4 +67,41 @@ class MainMenuButtons(game: GameMain) {
     private fun getImageButton(assetInfo: AssetInfo): ImageButton =
             ImageButton(SpriteDrawable(Sprite(Texture(assetInfo.getFilePath()))))
 
+    private fun addAllListeners() {
+        // Note: The generic Actor.addListener(EventListener) function will emit an event
+        // for all events (including mouse hover events). We need to explicitly specify
+        // a 'ChangeListener' to receive only 'On Click' events.
+
+        // Standard listener registration using verbose syntax.
+        btnPlay.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                game.screen = Gameplay(game)
+            }
+        })
+
+        // Listener registration using extension function with lambda expression.
+        btnHighScore.addChangeListener {
+            game.screen = HighScore(game)
+        }
+        btnOptions.addChangeListener {
+            println("Clicked Options")
+        }
+        btnQuit.addChangeListener {
+            println("Clicked Quit")
+        }
+        btnMusic.addChangeListener {
+            println("Clicked Music")
+        }
+    }
+
+    /**
+     * [ImageButton] extension function for Java interoperability.
+     */
+    private inline fun ImageButton.addChangeListener(crossinline onClick: () -> Unit) {
+        addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent?, actor: Actor?) {
+                onClick()
+            }
+        })
+    }
 }

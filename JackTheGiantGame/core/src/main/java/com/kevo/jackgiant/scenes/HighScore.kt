@@ -4,13 +4,10 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.utils.ScreenUtils
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
-import com.kevo.jackgiant.hud.MainMenuButtons
 
-class MainMenu(game: GameMain) : BaseScene(game) {
+class HighScore(game: GameMain) : BaseScene(game) {
 
-    private var background: Texture = Texture("Backgrounds/Menu BG.png")
-
-    private var buttons: MainMenuButtons
+    private var background: Texture = Texture("Backgrounds/High Score BG.png")
 
     init {
         mainCamera.setToOrtho(false,
@@ -20,8 +17,6 @@ class MainMenu(game: GameMain) : BaseScene(game) {
         mainCamera.position.set(
                 GameInfo.WIDTH / 2f,
                 GameInfo.HEIGHT / 2f, 0f)
-
-        buttons = MainMenuButtons(game)
     }
 
     /**
@@ -36,14 +31,12 @@ class MainMenu(game: GameMain) : BaseScene(game) {
         game.batch.draw(background, 0f, 0f)
 
         game.batch.end()
-
-        game.batch.projectionMatrix = buttons.stage.camera.combined
-        buttons.stage.draw()
     }
 
-    /** Called when this screen should release all resources.  */
+    /**
+     * Called when this screen should release all resources.
+     */
     override fun dispose() {
         background.dispose()
-        buttons.stage.dispose()
     }
 }
