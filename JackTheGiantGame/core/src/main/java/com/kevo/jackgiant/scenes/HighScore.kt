@@ -4,10 +4,13 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.utils.ScreenUtils
 import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
+import com.kevo.jackgiant.hud.HighScoreButtons
 
 class HighScore(game: GameMain) : BaseScene(game) {
 
     private var background: Texture = Texture("Backgrounds/High Score BG.png")
+
+    private var buttons: HighScoreButtons
 
     init {
         mainCamera.setToOrtho(false,
@@ -17,6 +20,8 @@ class HighScore(game: GameMain) : BaseScene(game) {
         mainCamera.position.set(
                 GameInfo.WIDTH / 2f,
                 GameInfo.HEIGHT / 2f, 0f)
+
+        buttons = HighScoreButtons(game)
     }
 
     /**
@@ -31,6 +36,9 @@ class HighScore(game: GameMain) : BaseScene(game) {
         game.batch.draw(background, 0f, 0f)
 
         game.batch.end()
+
+        game.batch.projectionMatrix = buttons.stage.camera.combined
+        buttons.stage.draw()
     }
 
     /**
@@ -38,5 +46,6 @@ class HighScore(game: GameMain) : BaseScene(game) {
      */
     override fun dispose() {
         background.dispose()
+        buttons.stage.dispose()
     }
 }

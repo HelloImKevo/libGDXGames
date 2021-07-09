@@ -2,13 +2,10 @@ package com.kevo.jackgiant.hud
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -19,7 +16,7 @@ import com.kevo.jackgiant.scenes.Gameplay
 import com.kevo.jackgiant.scenes.HighScore
 import java.io.File
 
-class MainMenuButtons(private val game: GameMain) {
+class MainMenuButtons(game: GameMain) : BaseButtons(game) {
 
     private val gameViewport: Viewport = FitViewport(
             GameInfo.WIDTH.toFloat(),
@@ -64,9 +61,6 @@ class MainMenuButtons(private val game: GameMain) {
         btnMusic.setPosition(GameInfo.WIDTH - 13f, 13f, Align.bottomRight)
     }
 
-    private fun getImageButton(assetInfo: AssetInfo): ImageButton =
-            ImageButton(SpriteDrawable(Sprite(Texture(assetInfo.getFilePath()))))
-
     private fun addAllListeners() {
         // Note: The generic Actor.addListener(EventListener) function will emit an event
         // for all events (including mouse hover events). We need to explicitly specify
@@ -92,16 +86,5 @@ class MainMenuButtons(private val game: GameMain) {
         btnMusic.addChangeListener {
             println("Clicked Music")
         }
-    }
-
-    /**
-     * [ImageButton] extension function for Java interoperability.
-     */
-    private inline fun ImageButton.addChangeListener(crossinline onClick: () -> Unit) {
-        addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent?, actor: Actor?) {
-                onClick()
-            }
-        })
     }
 }
