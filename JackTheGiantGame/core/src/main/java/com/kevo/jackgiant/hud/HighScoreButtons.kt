@@ -47,7 +47,6 @@ class HighScoreButtons(game: GameMain) : BaseButtons(game) {
         val sep: String = File.separator
         btnBack = getImageButton(AssetInfo("Buttons${sep}OptionsMenu", "Back.png"))
 
-
         val generator = FreeTypeFontGenerator(Gdx.files.internal("Fonts${sep}blow.ttf"))
         val param = FreeTypeFontGenerator.FreeTypeFontParameter()
         param.size = 40

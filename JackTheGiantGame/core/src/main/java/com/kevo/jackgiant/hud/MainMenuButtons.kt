@@ -14,6 +14,7 @@ import com.kevo.jackgiant.GameInfo
 import com.kevo.jackgiant.GameMain
 import com.kevo.jackgiant.scenes.Gameplay
 import com.kevo.jackgiant.scenes.HighScore
+import com.kevo.jackgiant.scenes.OptionsScene
 import java.io.File
 
 class MainMenuButtons(game: GameMain) : BaseButtons(game) {
@@ -78,10 +79,10 @@ class MainMenuButtons(game: GameMain) : BaseButtons(game) {
             game.screen = HighScore(game)
         }
         btnOptions.addChangeListener {
-            println("Clicked Options")
+            game.screen = OptionsScene(game)
         }
         btnQuit.addChangeListener {
-            println("Clicked Quit")
+            Gdx.app.exit()
         }
         btnMusic.addChangeListener {
             println("Clicked Music")
