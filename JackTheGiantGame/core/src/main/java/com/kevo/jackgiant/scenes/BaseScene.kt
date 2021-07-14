@@ -15,7 +15,7 @@ abstract class BaseScene(protected val game: GameMain) : Screen {
             GameInfo.WIDTH.toFloat(),
             GameInfo.HEIGHT.toFloat())
 
-    protected val gameViewport: Viewport = StretchViewport(
+    private val gameViewport: Viewport = StretchViewport(
             GameInfo.WIDTH.toFloat(),
             GameInfo.HEIGHT.toFloat(),
             mainCamera)
@@ -31,7 +31,7 @@ abstract class BaseScene(protected val game: GameMain) : Screen {
      * @see ApplicationListener.resize
      */
     override fun resize(width: Int, height: Int) {
-        // TODO("Not yet implemented")
+        gameViewport.update(width, height)
     }
 
     /**
